@@ -1,4 +1,5 @@
-import { app, shell, BrowserWindow } from 'electron'
+/* eslint-disable prettier/prettier */
+import { app, shell, BrowserWindow, globalShortcut } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -20,6 +21,9 @@ function createWindow() {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
+
+  // Configura la ventana para iniciar en modo de pantalla completa
+  mainWindow.setFullScreen(true)
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -50,6 +54,10 @@ app.whenReady().then(() => {
   })
 
   createWindow()
+
+  globalShortcut.register('CommandOrControl+Shift+I', () => {
+    BrowserWindow.getFocusedWindow()?.webContents.toggleDevTools()
+  })
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
