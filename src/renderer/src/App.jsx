@@ -1,15 +1,36 @@
 /* eslint-disable prettier/prettier */
 import Lvl from './components/Lvl'
-import { useState } from 'react'
+import WelcomeUser from './components/WelcomeUser'
+import TypeOfTestMessage from './components/TypeOfTestMessage'
+import { useState, useEffect } from 'react'
 export default function App() {
-  let starter_Boxes = 256
-  let lvl_choose = 3
-  const [colorBox, setColorBox] = useState(Array(starter_Boxes).fill('#395fab'))
-  const isDone = colorBox.every((value) => value === '#44ae52')
+  const TOTAL_BOXES = 256
+  const COLOR_START = '#395fab'
+  const COLOR_END = '#44ae52'
+  const [colorBox, setColorBox] = useState(Array(TOTAL_BOXES).fill(COLOR_START))
+  const [showWelcome, setShowWelcome] = useState(true)
+  const [showInstructions, setShowInstructions] = useState(false)
+  const [isDone, setIsDone] = useState(false)
 
-  if (isDone) {
-    return <div>Yay</div>
-  }
+  useEffect(() => {
+    const transitionTimer = setTimeout(
+      () => {
+        if (showWelcome) {
+          setShowWelcome(false)
+          setShowInstructions(true)
+        } else if (showInstructions) {
+          setShowInstructions(false)
+        }
+      },
+      showWelcome ? 3000 : showInstructions ? 4000 : 0
+    )
+
+    return () => clearTimeout(transitionTimer)
+  }, [showWelcome, showInstructions])
+
+  useEffect(() => {
+    setIsDone(colorBox.every((value) => value === COLOR_END))
+  }, [colorBox])
 
   function onClick(index) {
     // Creamos una copia del array de colores
@@ -20,5 +41,18 @@ export default function App() {
     setColorBox(newColors)
   }
 
-  return <Lvl colorBox={colorBox} onClick={onClick} lvl={lvl_choose} />
+  return (
+    <>
+      {showWelcome && <WelcomeUser />}{' '}
+      {showInstructions && (
+        <TypeOfTestMessage
+          typeTest={'Touch Test'}
+          message={'Porfavor cambie de color todas las cajas usando el Touch Screen'}
+        />
+      )}
+      {!showWelcome && !showInstructions && !isDone && (
+        <Lvl colorBox={colorBox} onClick={onClick} />
+      )}
+    </>
+  )
 }

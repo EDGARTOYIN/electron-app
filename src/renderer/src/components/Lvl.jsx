@@ -4,7 +4,7 @@ import Box from './Box'
 
 export default function Lvl({ colorBox, onClick }) {
   // Establecer el valor de la variable CSS
-  document.documentElement.style.setProperty('--num-columns', 16  )
+  document.documentElement.style.setProperty('--num-columns', 16)
 
   const handleTouch = (e) => {
     const touches = e.changedTouches

@@ -32,3 +32,12 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+### NOTE
+
+If you are using Windows 11 o 10, you will probably trigger windows widgets with certain gestures.
+You can disable them using this:
+
+```bash
+Utilicé Windows+R, escribí "regedit" => navegar a "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\LockDown\AllowEdgeSwipe" => cambiar 'valor' a '0' = > reinicie el dispositivo y no más deslizamientos de borde.
+```
