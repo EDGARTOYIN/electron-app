@@ -22,8 +22,8 @@ function createWindow() {
     mainWindow.show()
   })
 
-  // Configura la ventana para iniciar en modo de pantalla completa
-  mainWindow.setFullScreen(true)
+  // // Configura la ventana para iniciar en modo de pantalla completa
+  // mainWindow.setFullScreen(true)
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)

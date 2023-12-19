@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable prettier/prettier */
 import Box from './Box'
-
+import { useEffect } from 'react'
+import RepeatTest from './RepeatTest'
 export default function Lvl({ colorBox, onClick }) {
   // Establecer el valor de la variable CSS
   document.documentElement.style.setProperty('--num-columns', 16)
