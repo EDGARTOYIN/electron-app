@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import { TOTAL_BOXES, COLOR_START, COLOR_END } from '../utilities/constants'
 import useCountDown from './useCountDown'
 
-const SPARE_TIME = 2 //segundos
+const SPARE_TIME = 100 //segundos
 
 export default function TouchTest({ testName, onTestComplete }) {
   const [colorBox, setColorBox] = useState(Array(TOTAL_BOXES).fill(COLOR_START))
@@ -37,6 +37,18 @@ export default function TouchTest({ testName, onTestComplete }) {
     setColorBox(newColors)
   }
 
+  function handleRepeatTest() {
+    // Reiniciar la prueba
+    setIsDone(false)
+    setIsLvlVisible(false)
+    setColorBox(Array(TOTAL_BOXES).fill(COLOR_START))
+    setIsModalOpen(false)
+  }
+
+  function handleFailed() {
+    onTestComplete(isDone)
+  }
+
   function handleEnterPressed() {
     // Este método se llama cuando se presiona Enter en TypeOfTestMessage
     setIsLvlVisible(true)
@@ -51,9 +63,15 @@ export default function TouchTest({ testName, onTestComplete }) {
           message="Cambie de color todas las cajas tocando la pantalla hasta que todas tengan el mismo color"
           onEnterPressed={handleEnterPressed}
         />
-      ) : !isDone ? (
-        <Lvl colorBox={colorBox} onClick={onClick} isModalOpen={isModalOpen} />
-      ) : null}
+      ) : (
+        <Lvl
+          colorBox={colorBox}
+          onClick={onClick}
+          isModalOpen={isModalOpen}
+          onRepeat={() => handleRepeatTest()}
+          onFailed={() => handleFailed()}
+        />
+      )}
     </>
   )
 }

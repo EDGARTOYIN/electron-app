@@ -3,7 +3,7 @@
 import Box from './Box'
 import { useEffect } from 'react'
 import RepeatTest from './RepeatTest'
-export default function Lvl({ colorBox, onClick, isModalOpen }) {
+export default function Lvl({ colorBox, onClick, isModalOpen, onRepeat, onFailed }) {
   // Establecer el valor de la variable CSS
   document.documentElement.style.setProperty('--num-columns', 16)
 
@@ -38,7 +38,7 @@ export default function Lvl({ colorBox, onClick, isModalOpen }) {
           <Box styleBox={color} key={index} />
         ))}
       </div>
-      {isModalOpen ? <RepeatTest /> : null}
+      {isModalOpen ? <RepeatTest onRepeat={onRepeat} onNext={onFailed} /> : null}
     </div>
   )
 }
