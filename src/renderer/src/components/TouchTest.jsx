@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable prettier/prettier */
 import Lvl from './Lvl'
 import TypeOfTestMessage from './TypeOfTestMessage'
 import { useState, useEffect } from 'react'
@@ -6,24 +8,28 @@ import useCountDown from './useCountDown'
 
 const SPARE_TIME = 2 //segundos
 
-export default function TouchTest() {
+export default function TouchTest({ testName, onTestComplete }) {
   const [colorBox, setColorBox] = useState(Array(TOTAL_BOXES).fill(COLOR_START))
   const [isDone, setIsDone] = useState(false)
-  // const [isModalOpen, setIsModalOpen] = useState(false)
   const [isLvlVisible, setIsLvlVisible] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // // Nuevo: Usa el hook useCountDown
-  // const { secondsLeft, start } = useCountDown()
+  // Nuevo: Usa el hook useCountDown
+  const { secondsLeft, start } = useCountDown()
 
   useEffect(() => {
     setIsDone(colorBox.every((value) => value === COLOR_END))
+    if (isDone) {
+      onTestComplete(isDone)
+    }
   }, [colorBox])
 
-  // useEffect(() => {
-  //   if (secondsLeft === 0) {
-  //     setIsModalOpen(true)
-  //   }
-  // }, [secondsLeft])
+  useEffect(() => {
+    if (secondsLeft === 0 && isLvlVisible) {
+      // Muestra el modal cuando el contador llega a cero y eL nivel se ve y El nivel no ha sido terminado
+      setIsModalOpen(true)
+    }
+  }, [secondsLeft, isLvlVisible])
 
   function onClick(index) {
     const newColors = [...colorBox]
@@ -39,16 +45,15 @@ export default function TouchTest() {
 
   return (
     <>
-      <TypeOfTestMessage
-        typeTest={'Touch Test'}
-        message={
-          'Cambie de color todas las cajas tocando la pantalla hasta que todas tengan el mismo color'
-        }
-        onEnterPressed={handleEnterPressed}
-      />
-      {isLvlVisible && !isDone && (
+      {!isLvlVisible ? (
+        <TypeOfTestMessage
+          typeTest="Touch Test"
+          message="Cambie de color todas las cajas tocando la pantalla hasta que todas tengan el mismo color"
+          onEnterPressed={handleEnterPressed}
+        />
+      ) : !isDone ? (
         <Lvl colorBox={colorBox} onClick={onClick} isModalOpen={isModalOpen} />
-      )}
+      ) : null}
     </>
   )
 }

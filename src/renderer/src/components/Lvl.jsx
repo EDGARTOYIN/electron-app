@@ -3,9 +3,11 @@
 import Box from './Box'
 import { useEffect } from 'react'
 import RepeatTest from './RepeatTest'
-export default function Lvl({ colorBox, onClick }) {
+export default function Lvl({ colorBox, onClick, isModalOpen }) {
   // Establecer el valor de la variable CSS
   document.documentElement.style.setProperty('--num-columns', 16)
+
+  useEffect(() => {}, [isModalOpen])
 
   const handleTouch = (e) => {
     const touches = e.changedTouches
@@ -26,16 +28,17 @@ export default function Lvl({ colorBox, onClick }) {
   }
 
   return (
-    <div
-      className={`grid-container h-screen`}
-      onTouchMove={(e) => handleTouch(e)}
-      onTouchStart={(e) => handleTouch(e)}
-    >
-      <>
+    <div>
+      <div
+        className={`grid-container h-screen relative`}
+        onTouchMove={(e) => handleTouch(e)}
+        onTouchStart={(e) => handleTouch(e)}
+      >
         {colorBox.map((color, index) => (
           <Box styleBox={color} key={index} />
         ))}
-      </>
+      </div>
+      {isModalOpen ? <RepeatTest /> : null}
     </div>
   )
 }

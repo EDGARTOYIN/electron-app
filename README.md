@@ -10,11 +10,17 @@ An Electron application with React
 
 ### Install
 
+### Para poder ejecutar el proyecto necesita:
+
+- Instalar la version mas nueva de nodeJS
+- Cambiar al directorio del proyecto con "cd ".\electron-app\"
+
+"Para instalas las dependencias del proyecto"
 ```bash
 $ npm install
 ```
 
-### Development
+### Development ejectuar el programa
 
 ```bash
 $ npm run dev
