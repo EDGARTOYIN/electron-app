@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import { TOTAL_BOXES, COLOR_START, COLOR_END } from '../utilities/constants'
 import useCountDown from './useCountDown'
 
-const SPARE_TIME = 100 //segundos
+const SPARE_TIME = 4 //segundos
 
 export default function TouchTest({ testName, onTestComplete }) {
   const [colorBox, setColorBox] = useState(Array(TOTAL_BOXES).fill(COLOR_START))
@@ -59,7 +59,7 @@ export default function TouchTest({ testName, onTestComplete }) {
     <>
       {!isLvlVisible ? (
         <TypeOfTestMessage
-          typeTest="Touch Test"
+          typeTest="Test de Touch"
           message="Cambie de color todas las cajas tocando la pantalla hasta que todas tengan el mismo color"
           onEnterPressed={handleEnterPressed}
         />

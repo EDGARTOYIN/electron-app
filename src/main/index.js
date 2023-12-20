@@ -20,10 +20,11 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    mainWindow.focus()
   })
 
-  // // Configura la ventana para iniciar en modo de pantalla completa
-  // mainWindow.setFullScreen(true)
+  // Configura la ventana para iniciar en modo de pantalla completa
+  mainWindow.setFullScreen(true)
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)

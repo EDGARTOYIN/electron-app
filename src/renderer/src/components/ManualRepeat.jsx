@@ -3,7 +3,7 @@
 import { IconContext } from 'react-icons/lib'
 import { PiWarning } from 'react-icons/pi'
 
-export default function RepeatTest({ title, mensaje, onRepeat, onNext }) {
+export default function RepeatTest({ title, mensaje, onRepeat, onNext, onPass }) {
   return (
     <div className="fixed top-0 left-0 w-full h-full z-50 flex backdrop-blur-sm items-center justify-center">
       <div className="rounded-lg bg-white py-6  w-3/5 max-w-[30rem] shadow-lg">
@@ -30,12 +30,18 @@ export default function RepeatTest({ title, mensaje, onRepeat, onNext }) {
               Repetir Test
             </button>
             <button
-              className="font-semibold border rounded-sm hover:bg-slate-50 border-[#90949b] py-1 px-10"
+              className="font-semibold border rounded-sm hover:bg-slate-100 border-[#90949b] py-1 px-10"
               onClick={onNext}
             >
-              Siguiente
+              No paso el test
             </button>
           </div>
+          <button
+            onClick={onPass}
+            className="font-semibold rounded-sm mt-2 py-1 px-10 bg-green-500 hover:bg-green-400 text-white"
+          >
+            Paso el test
+          </button>
         </div>
       </div>
     </div>

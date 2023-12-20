@@ -1,11 +1,15 @@
 /* eslint-disable prettier/prettier */
 import TouchTest from './components/TouchTest'
+import DeadPixelTest from './components/DeadPixelTest'
 import { useEffect, useState } from 'react'
 import TestContainer from './components/TestContainer'
 import OutputLogTest from './components/OutputLogTest'
 
 // Tests Actuales
-const tests = [{ testName: 'Touch Test', TestComponent: TouchTest }]
+const tests = [
+  { testName: 'Touch Screen', TestComponent: TouchTest },
+  { testName: 'Pixel Dead', TestComponent: DeadPixelTest }
+]
 
 export default function App() {
   // Estado para mantener el historial de resultados de los tests
@@ -38,9 +42,5 @@ export default function App() {
         <OutputLogTest testResults={testResults} />
       )}
     </>
-    // <TouchTest
-    //   testName="Primer Test"
-    //   onTestComplete={(isPassed) => addTestResult('Primer Test', isPassed)}
-    // />
   )
 }

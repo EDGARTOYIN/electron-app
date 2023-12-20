@@ -33,12 +33,20 @@ export default function Lvl({ colorBox, onClick, isModalOpen, onRepeat, onFailed
         className={`grid-container h-screen relative`}
         onTouchMove={(e) => handleTouch(e)}
         onTouchStart={(e) => handleTouch(e)}
+        onTouchEnd={(e) => handleTouch(e)} // Agregado el manejo de onTouchEnd
       >
         {colorBox.map((color, index) => (
           <Box styleBox={color} key={index} />
         ))}
       </div>
-      {isModalOpen ? <RepeatTest onRepeat={onRepeat} onNext={onFailed} /> : null}
+      {isModalOpen ? (
+        <RepeatTest
+          title={'Test Fallido'}
+          mensaje={'Se ha acabo el tiempo dado'}
+          onRepeat={onRepeat}
+          onNext={onFailed}
+        />
+      ) : null}
     </div>
   )
 }
