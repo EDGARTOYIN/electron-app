@@ -23,7 +23,7 @@ export default function RepeatTest({ title, mensaje, onRepeat, onNext, onPass })
           "
           >
             <button
-              className="bg-[#4f46e5] py-1 px-10
+              className="bg-[#4f46e5] py-1 px-10 font-semibold
              text-white rounded-sm hover:bg-blue-500"
               onClick={onRepeat}
             >
