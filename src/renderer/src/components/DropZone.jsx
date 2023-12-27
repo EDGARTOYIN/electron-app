@@ -2,9 +2,13 @@
 /* eslint-disable prettier/prettier */
 import { useDrop } from 'react-dnd'
 import DragableBox from './DragableBox'
-export default function DropZone({ listaDrop, boxList, updateDropZoneList, pos }) {
+import { useState } from 'react'
+export default function DropZone({ boxList, updateDropZoneList, pos }) {
+  const [placeHolder, setPlaceHolder] = useState([])
+
   const addBoxToList = (id) => {
     const UnitBox = boxList.find((item) => item.id === id)
+    setPlaceHolder((oldHolder) => [...oldHolder, UnitBox])
     updateDropZoneList(UnitBox)
   }
 
@@ -25,11 +29,18 @@ export default function DropZone({ listaDrop, boxList, updateDropZoneList, pos }
   return (
     <div
       className={`border border-dashed flex justify-center ${boxPos[pos]} items-center rounded-lg relative bg-green-400 w-[160px] h-[75px] py-1`}
-      ref={drop}
+      ref={placeHolder.length === 0 ? drop : undefined} // Asignar drop solo si placeHolder está vacío
     >
-      {listaDrop.length > 0 ? (
-        listaDrop.map((item, index) => {
-          return <DragableBox key={index} name={item.name} id={item.id}></DragableBox>
+      {placeHolder.length > 0 ? (
+        placeHolder.map((item, index) => {
+          return (
+            <DragableBox
+              key={index}
+              name={item.name}
+              id={item.id}
+              placeHolder={placeHolder}
+            ></DragableBox>
+          )
         })
       ) : (
         <p className="text-white">Drop Here</p>

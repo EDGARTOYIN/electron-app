@@ -4,7 +4,7 @@ import TypeOfTestMessage from './TypeOfTestMessage'
 import { CLICK_AMOUT } from '../utilities/constants'
 import ManualRepeat from './ManualRepeat'
 
-import { DndProvider, useDrop } from 'react-dnd'
+import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import DragableBox from './DragableBox'
 import DropZone from './DropZone'
@@ -12,7 +12,6 @@ import DropZone from './DropZone'
 export default function TouchPad() {
   // const [leftClick, setLeftClick] = useState(0)
   // const [rightClick, setRightClick] = useState(0)
-  const [dropZoneList, setDropZoneList] = useState([])
   const [boxList, setBoxList] = useState([
     { id: 1, name: 'Box1' },
     { id: 2, name: 'Box2' },
@@ -33,7 +32,6 @@ export default function TouchPad() {
   // }
 
   function updateDropZoneList(box) {
-    setDropZoneList((OldState) => [...OldState, box])
     setBoxList((oldBoxes) => oldBoxes.filter((item) => item.id !== box.id))
   }
 
@@ -52,14 +50,14 @@ export default function TouchPad() {
       {inst ? (
         <TypeOfTestMessage
           typeTest="Test de TouchPad"
-          message="Presione los botones correspondientes hasta la cantidad maxima y verifique funcionan adecuadamente"
+          message="Arraste una caja a cada posicion disponible con el TouchPad"
           onEnterPressed={handleEnterPressed}
         />
       ) : !isModalOpen ? (
         <DndProvider backend={HTML5Backend}>
-          <div className="grid grid-cols-3 grid-rows-3 h-screen p-6">
+          <div className="grid grid-cols-3 grid-rows-3 h-screen p-3">
             <div
-              className="col-star-2 row-start-2 grid justify-self-center self-center grid-cols-[8rem_8rem] grid-rows-[5rem_5rem] gap-5
+              className="col-star-2 row-start-2 grid justify-self-center self-center grid-cols-[8rem_8rem] grid-rows-[3rem_3rem] gap-5
             "
             >
               {boxList.map((item) => {
@@ -67,25 +65,21 @@ export default function TouchPad() {
               })}
             </div>
             <DropZone
-              listaDrop={dropZoneList}
               boxList={boxList}
               updateDropZoneList={(box) => updateDropZoneList(box)}
               pos={1}
             ></DropZone>
             <DropZone
-              listaDrop={dropZoneList}
               boxList={boxList}
               updateDropZoneList={(box) => updateDropZoneList(box)}
               pos={2}
             ></DropZone>
             <DropZone
-              listaDrop={dropZoneList}
               boxList={boxList}
               updateDropZoneList={(box) => updateDropZoneList(box)}
               pos={3}
             ></DropZone>
             <DropZone
-              listaDrop={dropZoneList}
               boxList={boxList}
               updateDropZoneList={(box) => updateDropZoneList(box)}
               pos={4}
