@@ -8,6 +8,6 @@ import AudioTest from './components/AudioTest'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AudioTest />
+    <TouchPad />
   </React.StrictMode>
 )

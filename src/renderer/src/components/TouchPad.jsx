@@ -3,34 +3,42 @@ import { useState, useEffect } from 'react'
 import TypeOfTestMessage from './TypeOfTestMessage'
 import { CLICK_AMOUT } from '../utilities/constants'
 import ManualRepeat from './ManualRepeat'
+
+import { DndProvider, useDrop } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import DragableBox from './DragableBox'
+import DropZone from './DropZone'
+
 export default function TouchPad() {
-  const [leftClick, setLeftClick] = useState(0)
-  const [rightClick, setRightClick] = useState(0)
-  const [middleClick, setMiddleClick] = useState(0)
+  // const [leftClick, setLeftClick] = useState(0)
+  // const [rightClick, setRightClick] = useState(0)
+  const [dropZoneList, setDropZoneList] = useState([])
+  const [boxList, setBoxList] = useState([
+    { id: 1, name: 'Box1' },
+    { id: 2, name: 'Box2' },
+    { id: 3, name: 'Box3' },
+    { id: 4, name: 'Box4' }
+  ])
   const [isModalOpen, setIsModalOpen] = useState(false)
+
   const [inst, setInst] = useState(true)
 
-  useEffect(() => {
-    let suma = rightClick + leftClick + middleClick
-    if (suma === 105) setIsModalOpen(true)
-  }, [leftClick, rightClick, middleClick])
+  // function handleRigthClick(event) {
+  //   event.preventDefault()
+  //   if (rightClick < CLICK_AMOUT) setRightClick(rightClick + 1)
+  // }
 
-  function handleMiddleClick() {
-    if (middleClick < CLICK_AMOUT) setMiddleClick(middleClick + 1)
-  }
+  // function handleLeftClick() {
+  //   if (leftClick < CLICK_AMOUT) setLeftClick(leftClick + 1)
+  // }
 
-  function handleRigthClick(event) {
-    event.preventDefault()
-    if (rightClick < CLICK_AMOUT) setRightClick(rightClick + 1)
-  }
-
-  function handleLeftClick() {
-    if (leftClick < CLICK_AMOUT) setLeftClick(leftClick + 1)
+  function updateDropZoneList(box) {
+    setDropZoneList((OldState) => [...OldState, box])
+    setBoxList((oldBoxes) => oldBoxes.filter((item) => item.id !== box.id))
   }
 
   function redoTest() {
     setIsModalOpen(false)
-    setMiddleClick(0)
     setRightClick(0)
     setLeftClick(0)
   }
@@ -48,31 +56,42 @@ export default function TouchPad() {
           onEnterPressed={handleEnterPressed}
         />
       ) : !isModalOpen ? (
-        <div className="grid place-items-center h-screen">
-          <div className="grid grid-cols-[200px_200px] gap-5">
+        <DndProvider backend={HTML5Backend}>
+          <div className="grid grid-cols-3 grid-rows-3 h-screen p-6">
             <div
-              onClick={handleMiddleClick}
-              className="bg-gray-200 col-span-2 p-32 text-center rounded-t-xl"
-              style={{ userSelect: 'none' }}
+              className="col-star-2 row-start-2 grid justify-self-center self-center grid-cols-[8rem_8rem] grid-rows-[5rem_5rem] gap-5
+            "
             >
-              Click ({middleClick})
+              {boxList.map((item) => {
+                return <DragableBox key={item.id} name={item.name} id={item.id}></DragableBox>
+              })}
             </div>
-            <div
-              onClick={handleLeftClick}
-              className="bg-gray-200 p-5 text-center rounded-b-xl"
-              style={{ userSelect: 'none' }}
-            >
-              Click ({leftClick})
-            </div>
-            <div
-              onContextMenu={handleRigthClick}
-              className="bg-gray-200 p-5 text-center rounded-b-xl"
-              style={{ userSelect: 'none' }}
-            >
-              Click ({rightClick})
-            </div>
+            <DropZone
+              listaDrop={dropZoneList}
+              boxList={boxList}
+              updateDropZoneList={(box) => updateDropZoneList(box)}
+              pos={1}
+            ></DropZone>
+            <DropZone
+              listaDrop={dropZoneList}
+              boxList={boxList}
+              updateDropZoneList={(box) => updateDropZoneList(box)}
+              pos={2}
+            ></DropZone>
+            <DropZone
+              listaDrop={dropZoneList}
+              boxList={boxList}
+              updateDropZoneList={(box) => updateDropZoneList(box)}
+              pos={3}
+            ></DropZone>
+            <DropZone
+              listaDrop={dropZoneList}
+              boxList={boxList}
+              updateDropZoneList={(box) => updateDropZoneList(box)}
+              pos={4}
+            ></DropZone>
           </div>
-        </div>
+        </DndProvider>
       ) : (
         <ManualRepeat
           mensaje={'Se ha presionado cada boton'}
