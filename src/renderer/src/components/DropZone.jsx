@@ -30,6 +30,7 @@ export default function DropZone({ boxList, updateDropZoneList, pos }) {
     <div
       className={`border border-dashed flex justify-center ${boxPos[pos]} items-center rounded-lg relative bg-green-400 w-[160px] h-[75px] py-1`}
       ref={placeHolder.length === 0 ? drop : undefined} // Asignar drop solo si placeHolder está vacío
+      style={{ backgroundColor: isOver ? 'blue' : undefined }}
     >
       {placeHolder.length > 0 ? (
         placeHolder.map((item, index) => {
@@ -43,7 +44,7 @@ export default function DropZone({ boxList, updateDropZoneList, pos }) {
           )
         })
       ) : (
-        <p className="text-white">Drop Here</p>
+        <p className="text-white">Suelte aquí</p>
       )}
     </div>
   )

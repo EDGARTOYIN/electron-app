@@ -1,97 +1,93 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import TypeOfTestMessage from './TypeOfTestMessage'
 import { CLICK_AMOUT } from '../utilities/constants'
-import ManualRepeat from './ManualRepeat'
+import ClickTouchpadTest from './ClickTouchpadTest'
+import DragDrop from './DragDrop'
+import useCountDown from './useCountDown'
+import RepeatTest from './RepeatTest'
+const TOTAL_CLICKS = 10
+const SPARE_TIME = 4 //segundos
 
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import DragableBox from './DragableBox'
-import DropZone from './DropZone'
-
-export default function TouchPad() {
-  // const [leftClick, setLeftClick] = useState(0)
-  // const [rightClick, setRightClick] = useState(0)
-  const [boxList, setBoxList] = useState([
-    { id: 1, name: 'Box1' },
-    { id: 2, name: 'Box2' },
-    { id: 3, name: 'Box3' },
-    { id: 4, name: 'Box4' }
-  ])
+export default function TouchPad({ onTestComplete }) {
+  const [leftClick, setLeftClick] = useState(0)
+  const [rightClick, setRightClick] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
-
   const [inst, setInst] = useState(true)
+  const [isLvl1Done, setIsLvl1Done] = useState(false)
 
-  // function handleRigthClick(event) {
-  //   event.preventDefault()
-  //   if (rightClick < CLICK_AMOUT) setRightClick(rightClick + 1)
-  // }
+  const { secondsLeft, start } = useCountDown()
 
-  // function handleLeftClick() {
-  //   if (leftClick < CLICK_AMOUT) setLeftClick(leftClick + 1)
-  // }
+  useEffect(() => {
+    if (secondsLeft === 0 && !inst) {
+      // Muestra el modal cuando el contador llega a cero
+      setIsModalOpen(true)
+    }
+  }, [secondsLeft, inst, isLvl1Done])
 
-  function updateDropZoneList(box) {
-    setBoxList((oldBoxes) => oldBoxes.filter((item) => item.id !== box.id))
+  useEffect(() => {
+    // Verificar si la suma de leftClick y rightClick es igual a TOTAL_CLICKS
+    if (leftClick + rightClick === TOTAL_CLICKS) {
+      setIsLvl1Done(true)
+      start(SPARE_TIME)
+    }
+  }, [leftClick, rightClick])
+
+  function handleRigthClick(event) {
+    event.preventDefault()
+    if (rightClick < CLICK_AMOUT) setRightClick(rightClick + 1)
+  }
+
+  function handleLeftClick() {
+    if (leftClick < CLICK_AMOUT) setLeftClick(leftClick + 1)
   }
 
   function redoTest() {
     setIsModalOpen(false)
+    setIsLvl1Done(false)
+    setInst(true)
     setRightClick(0)
     setLeftClick(0)
   }
 
   function handleEnterPressed() {
+    start(SPARE_TIME)
     setInst(false)
+  }
+
+  function endTest() {
+    onTestComplete(true)
   }
 
   return (
     <>
-      {inst ? (
+      {inst ? ( // si las instrucciones estan activas
         <TypeOfTestMessage
           typeTest="Test de TouchPad"
-          message="Arraste una caja a cada posicion disponible con el TouchPad"
+          message="Se hara una prueba de clicks y una prueba de tomar y soltar"
           onEnterPressed={handleEnterPressed}
         />
-      ) : !isModalOpen ? (
-        <DndProvider backend={HTML5Backend}>
-          <div className="grid grid-cols-3 grid-rows-3 h-screen p-3">
-            <div
-              className="col-star-2 row-start-2 grid justify-self-center self-center grid-cols-[8rem_8rem] grid-rows-[3rem_3rem] gap-5
-            "
-            >
-              {boxList.map((item) => {
-                return <DragableBox key={item.id} name={item.name} id={item.id}></DragableBox>
-              })}
-            </div>
-            <DropZone
-              boxList={boxList}
-              updateDropZoneList={(box) => updateDropZoneList(box)}
-              pos={1}
-            ></DropZone>
-            <DropZone
-              boxList={boxList}
-              updateDropZoneList={(box) => updateDropZoneList(box)}
-              pos={2}
-            ></DropZone>
-            <DropZone
-              boxList={boxList}
-              updateDropZoneList={(box) => updateDropZoneList(box)}
-              pos={3}
-            ></DropZone>
-            <DropZone
-              boxList={boxList}
-              updateDropZoneList={(box) => updateDropZoneList(box)}
-              pos={4}
-            ></DropZone>
-          </div>
-        </DndProvider>
+      ) : !isModalOpen ? ( // si el modal es falso muestra el nivel
+        <>
+          {!isLvl1Done ? ( // si el nivel ha terminado
+            <ClickTouchpadTest
+              left={leftClick}
+              right={rightClick}
+              handleClick={() => handleLeftClick()}
+              handleContextMenu={(e) => handleRigthClick(e)}
+            />
+          ) : (
+            // muestra el siguiente
+            <DragDrop handleEndTest={() => endTest()} />
+          )}
+        </>
       ) : (
-        <ManualRepeat
-          mensaje={'Se ha presionado cada boton'}
+        // muestra el modal
+        <RepeatTest
+          mensaje={'Se acabo el tiempo'}
           onRepeat={() => redoTest()}
           onNext={() => onTestComplete(false)}
-          onPass={() => onTestComplete(true)}
         />
       )}
     </>

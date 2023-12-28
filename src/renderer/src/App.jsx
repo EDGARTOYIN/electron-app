@@ -4,11 +4,13 @@ import DeadPixelTest from './components/DeadPixelTest'
 import { useEffect, useState } from 'react'
 import TestContainer from './components/TestContainer'
 import OutputLogTest from './components/OutputLogTest'
+import TouchPad from './components/TouchPad'
 
 // Tests Actuales
 const tests = [
   { testName: 'Touch Screen', TestComponent: TouchTest },
-  { testName: 'Pixel Dead', TestComponent: DeadPixelTest }
+  { testName: 'Pixel Dead', TestComponent: DeadPixelTest },
+  { testName: 'Touch Pad', TestComponent: TouchPad }
 ]
 
 export default function App() {

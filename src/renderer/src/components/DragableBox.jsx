@@ -11,7 +11,7 @@ export default function DragableBox({ name, id, placeHolder }) {
   }))
   return (
     <div
-      className="flex justify-center items-center w-[9rem] h-[4.2rem]  rounded-lg bg-indigo-500"
+      className="flex justify-center text-white items-center w-[9rem] h-[4.2rem]  rounded-lg bg-[#395fab]"
       ref={placeHolder?.length === 1 ? undefined : drag}
       style={{ border: isDragging ? '3px solid pink' : '0px' }}
     >
