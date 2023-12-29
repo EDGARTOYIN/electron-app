@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable prettier/prettier */
 import Lvl from './Lvl'
 import TypeOfTestMessage from './TypeOfTestMessage'
 import { useState, useEffect } from 'react'

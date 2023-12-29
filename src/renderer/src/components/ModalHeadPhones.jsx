@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable prettier/prettier */
 import { IconContext } from 'react-icons/lib'
 import { FaHeadphonesAlt } from 'react-icons/fa'
 

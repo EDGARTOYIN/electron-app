@@ -1,64 +1,99 @@
-/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
-import ModalHeadPhones from './ModalHeadPhones'
 import TypeOfTestMessage from './TypeOfTestMessage'
+import VideoPlay from './VideoPlay'
+import ModalHeadPhones from './ModalHeadPhones'
+import { getFilePath } from '../utilities/utilityFunctions'
 import useCountDown from './useCountDown'
-
+import AudioTestContent from './AudioTestContent'
 const SPARE_TIME = 15
+
 export default function AudioTest() {
   const [videoPath, setVideoPath] = useState(null)
-  const [outputDevices, setOutputDevices] = useState([])
-  const [defaultDevice, setDefaultDevice] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState(null)
-  const [guideLines, setGuideLines] = useState(true)
-  const [deviceTesting, setDeviceTesting] = useState('Headphones')
+  const [isGuideVisible, setIsGuideVisible] = useState(true)
+  const [isLoading, setLoading] = useState(true)
+  const [isError, setError] = useState(false)
+  const [mainOutput, setMainOutput] = useState(null)
+  const [device, setDevice] = useState('Headphones')
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
-  const { secondsLeft, start } = useCountDown()
+  const { secondsLeft, start, stop } = useCountDown()
 
   useEffect(() => {
-    const currentScriptPath = new URL(import.meta.url).pathname
-    const file = `.${currentScriptPath}/../../preload/The Weeknd - Save Your Tears (Official Music Video).mp4`
-    navigator.mediaDevices.addEventListener('devicechange', getOutputAudioDevices)
-
+    const file = getFilePath(
+      '../../preload/The Weeknd - Save Your Tears (Official Music Video).mp4'
+    )
     getOutputAudioDevices()
     setVideoPath(file)
 
-    // Clean up the event listener when the component is unmounted
+    function handleDeviceChange() {
+      getOutputAudioDevices()
+    }
+
+    navigator.mediaDevices.addEventListener('devicechange', handleDeviceChange)
+
     return () => {
-      navigator.mediaDevices.removeEventListener('devicechange', getOutputAudioDevices)
+      navigator.mediaDevices.removeEventListener('devicechange', handleDeviceChange)
     }
   }, [])
 
-  function getOutputAudioDevices() {
-    if (!navigator.mediaDevices?.enumerateDevices) {
-      // Handle unsupported case
-    } else {
-      navigator.mediaDevices
-        .enumerateDevices()
-        .then((devices) => {
-          const audioOutputDevices = devices.filter((device) => device.kind === 'audiooutput')
-          const deviceType = audioOutputDevices.find((type) => type.label.includes('Default'))
-          setDefaultDevice([deviceType])
-          setOutputDevices(audioOutputDevices)
+  // The first timer for the headphones test
+  useEffect(() => {
+    if (secondsLeft === 0 && !isGuideVisible) {
+      setDevice('Speakers')
+    }
+    console.log(secondsLeft)
+  }, [secondsLeft])
 
-          // Update modal status
-          setIsModalOpen(!deviceType?.label.includes(deviceTesting))
-        })
-        .catch((err) => {
-          setCurrentOutput(`${err.name}: ${err.message}`)
-        })
+  async function getOutputAudioDevices() {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      const audioOutputDevices = devices.filter((device) => device.kind === 'audiooutput')
+      const deviceType = audioOutputDevices.find((type) => type.label.includes('Default'))
+      setMainOutput(deviceType.label)
+      if (!deviceType.label.includes(device)) {
+        setIsModalVisible(true)
+      }
+    } catch (err) {
+      setMainOutput(`${err.name}: ${err.message}`)
+    }
+  }
+
+  function modalToRender() {
+    // CHECK IF THE CURRENT DEFAULT DEVICE IS THE SAME AS THE TESTING DEVICE, IF NOT SHOW A MODAL.
+    if (shouldStop) {
+      return <ModalHeadPhones title="Prueba de Audio" />
+    } else {
+      return (
+        <AudioTestContent
+          videoPath={videoPath}
+          handleVideoLoaded={handleVideoLoaded}
+          handleVideoError={handleVideoError}
+          isLoading={isLoading}
+          isError={isError}
+          mainOutput={mainOutput}
+          device={device}
+        />
+      )
     }
   }
 
   function handleEnterPressed() {
-    // Este método se llama cuando se presiona Enter en TypeOfTestMessage
-    setGuideLines(false)
-    start(SPARE_TIME) // Inicia el contador con 10 segundos
+    setIsGuideVisible(false)
+    start(SPARE_TIME)
+  }
+
+  function handleVideoLoaded() {
+    setLoading(false)
+  }
+
+  function handleVideoError() {
+    setLoading(false)
+    setError(true)
   }
 
   return (
     <>
-      {guideLines ? (
+      {isGuideVisible ? (
         <TypeOfTestMessage
           typeTest="Audio Test"
           message={
@@ -67,22 +102,7 @@ export default function AudioTest() {
           onEnterPressed={handleEnterPressed}
         />
       ) : (
-        <div className="h-screen grid grid-cols-2 max-w-[70rem] place-items-center mx-auto gap-5">
-          {videoPath && (
-            <video autoPlay width="600" className="block">
-              <source src={`animation:///${videoPath}`} type="video/mp4" />
-            </video>
-          )}
-          <div>
-            {defaultDevice.map((item, index) => (
-              <h1 className="font-semibold" key={index}>
-                {item.label}
-              </h1>
-            ))}
-          </div>
-          {isModalOpen ? <ModalHeadPhones title={'Audio Test'} /> : null}
-          {secondsLeft}
-        </div>
+        modalToRender()
       )}
     </>
   )
