@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import { TOTAL_BOXES, COLOR_START, COLOR_END } from '../utilities/constants'
 import useCountDown from './useCountDown'
 
-const SPARE_TIME = 4 //segundos
+const SPARE_TIME = 30 //segundos
 
 export default function TouchTest({ testName, onTestComplete }) {
   const [colorBox, setColorBox] = useState(Array(TOTAL_BOXES).fill(COLOR_START))

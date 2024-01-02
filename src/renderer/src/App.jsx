@@ -5,12 +5,14 @@ import { useEffect, useState } from 'react'
 import TestContainer from './components/TestContainer'
 import OutputLogTest from './components/OutputLogTest'
 import TouchPad from './components/TouchPad'
+import AudioTest from './components/AudioTest'
 
 // Tests Actuales
 const tests = [
   { testName: 'Touch Screen', TestComponent: TouchTest },
   { testName: 'Pixel Dead', TestComponent: DeadPixelTest },
-  { testName: 'Touch Pad', TestComponent: TouchPad }
+  { testName: 'Touch Pad', TestComponent: TouchPad },
+  { testName: 'Audio Test', TestComponent: AudioTest }
 ]
 
 export default function App() {

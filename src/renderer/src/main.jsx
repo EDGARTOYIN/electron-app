@@ -4,8 +4,9 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
 import AudioTest from './components/AudioTest'
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AudioTest />
+    <App />
   </React.StrictMode>
 )

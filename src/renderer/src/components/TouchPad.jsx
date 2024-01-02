@@ -8,7 +8,7 @@ import DragDrop from './DragDrop'
 import useCountDown from './useCountDown'
 import RepeatTest from './RepeatTest'
 const TOTAL_CLICKS = 10
-const SPARE_TIME = 4 //segundos
+const SPARE_TIME = 15 //segundos
 
 export default function TouchPad({ onTestComplete }) {
   const [leftClick, setLeftClick] = useState(0)

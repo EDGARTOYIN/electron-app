@@ -1,20 +1,24 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import ModalHeadPhones from './ModalHeadPhones'
 import TypeOfTestMessage from './TypeOfTestMessage'
-import useCountDown from './useCountDown'
+import useCountDownAudio from './useCountDownAudio'
 
 const SPARE_TIME = 15
-export default function AudioTest() {
+const CHANCES = 3
+const htest =
+  'Inicie la prueba con los audífonos conectados, no los desconecte, escuche atentamente el audio'
+export default function AudioTest({ onTestComplete }) {
   const [videoPath, setVideoPath] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [guideLines, setGuideLines] = useState(true)
   const [isLoading, setIsLoading] = useState(false) // Nuevo estado para el indicador de carga
-  const [chances, setChances] = useState(3)
-
-  const { secondsLeft, start, stop } = useCountDown(() => {
-    console.log('Countdown finished!')
-  })
+  const [chances, setChances] = useState(CHANCES)
+  const [device, setDevice] = useState('headphones') // Nuevo estado para el dispositivo de audio [headphones
+  const [message, setMessage] = useState(htest) // Nuevo estado para el mensaje de audio [headphones
+  const [next, setNext] = useState(null)
+  const [counter, setCounter] = useState(0)
 
   useEffect(() => {
     const currentScriptPath = new URL(import.meta.url).pathname
@@ -25,26 +29,40 @@ export default function AudioTest() {
     }
   }, [])
 
+  useEffect(() => {
+    if (counter === 2) onTestComplete(true)
+  }, [counter])
+
+  useEffect(() => {
+    if (chances === 0) onTestComplete(false)
+  }, [chances])
+
+  const { secondsLeft, start, stop } = useCountDownAudio(() => {
+    StartSpeakersTest()
+  })
+
   const handleDeviceChange = () => {
     resetTest()
   }
 
   function resetTest() {
-    stop()
-    setGuideLines(true)
-    setIsModalOpen(false)
-    setChances((prev) => prev - 1)
     navigator.mediaDevices.removeEventListener('devicechange', handleDeviceChange)
+    stop()
+    setDevice('headphones')
+    setGuideLines(true) // Se necesita aplicar un re render para que el video use correctamente los speakers
+    setIsModalOpen(false)
+    setChances(chances - 1)
   }
 
   function StartSpeakersTest() {
-    setGuideLines(true)
+    setDevice('speaker')
+    setIsModalOpen(true)
     setIsModalOpen(false)
+    const video = document.querySelector('video')
+    video.setSinkId(next)
+    start(SPARE_TIME)
+    setCounter((prev) => prev + 1)
   }
-
-  useEffect(() => {
-    console.log(secondsLeft)
-  }, [secondsLeft])
 
   const handleContinuarClick = async () => {
     setIsLoading(true) // Iniciar el indicador de carga
@@ -64,12 +82,15 @@ export default function AudioTest() {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices()
       const audioDevices = devices.filter((device) => device.kind === 'audiooutput')
-      const headphonePresent = audioDevices.some(
+      const devicePresent = audioDevices.some(
         (device_1) =>
           device_1.label.toLowerCase().includes('headphones') && device_1.label.includes('Default')
       )
-      console.log('headphonePresent', headphonePresent)
-      return headphonePresent
+      const deviceSpeaker = audioDevices.find((device_1) =>
+        device_1.label.toLowerCase().includes('speaker')
+      )
+      setNext(deviceSpeaker.deviceId)
+      return devicePresent
     } catch (err) {
       return false
     }
@@ -84,14 +105,12 @@ export default function AudioTest() {
       ) : guideLines ? (
         <TypeOfTestMessage
           typeTest="Audio Test"
-          message={
-            'Escuche atentamente el audio con los audiculares, no los desconecte hasta que se le indique'
-          }
+          message={message}
           tryAgain={chances}
           onEnterPressed={handleContinuarClick}
         />
       ) : isModalOpen ? (
-        <ModalHeadPhones title={'No puede iniciar la prueba sin Audífonos'} />
+        <ModalHeadPhones />
       ) : (
         <div className="h-screen grid max-w-[70rem] place-items-center mx-auto gap-5">
           {videoPath && (
@@ -99,6 +118,9 @@ export default function AudioTest() {
               <source src={`animation:///${videoPath}`} type="video/mp4" />
             </video>
           )}
+          <p>
+            Testeando: {device} {secondsLeft}
+          </p>
         </div>
       )}
     </>
