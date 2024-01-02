@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 // import { motion } from 'framer-motion'
 import { useState } from 'react'
-export default function TypeOfTestMessage({ typeTest, message, onEnterPressed }) {
+export default function TypeOfTestMessage({ typeTest, message, onEnterPressed, tryAgain }) {
   const [isVisible, setIsVisible] = useState(true)
 
   const handleKeyDown = () => {
@@ -29,6 +29,7 @@ export default function TypeOfTestMessage({ typeTest, message, onEnterPressed })
           </span>{' '}
           cuando este listo.
         </p>
+        {tryAgain && <p className="text-[1.2rem]">Tiene ({tryAgain}) intentos disponibles</p>}
       </div>
     )
   )
