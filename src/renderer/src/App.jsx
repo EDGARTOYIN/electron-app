@@ -6,13 +6,15 @@ import TestContainer from './components/TestContainer'
 import OutputLogTest from './components/OutputLogTest'
 import TouchPad from './components/TouchPad'
 import AudioTest from './components/AudioTest'
+import KeyBoardTest from './components/keyBoardLayouts/KeyBoardTest'
 
 // Tests Actuales
 const tests = [
-  { testName: 'Touch Screen', TestComponent: TouchTest },
-  { testName: 'Pixel Dead', TestComponent: DeadPixelTest },
-  { testName: 'Touch Pad', TestComponent: TouchPad },
-  { testName: 'Audio Test', TestComponent: AudioTest }
+  // { testName: 'Touch Screen', TestComponent: TouchTest },
+  // { testName: 'Pixel Dead', TestComponent: DeadPixelTest },
+  // { testName: 'Touch Pad', TestComponent: TouchPad },
+  // { testName: 'Audio Test', TestComponent: AudioTest },
+  { testName: 'KeyBoard Test', TestComponent: KeyBoardTest }
 ]
 
 export default function App() {
@@ -30,10 +32,6 @@ export default function App() {
     // Avanza al siguiente test
     setCurrentTestIndex(currentTestIndex + 1)
   }
-
-  useEffect(() => {
-    console.log(testResults)
-  }, [testResults])
 
   return (
     <>

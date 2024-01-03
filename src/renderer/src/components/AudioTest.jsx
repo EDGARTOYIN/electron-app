@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import ModalHeadPhones from './ModalHeadPhones'
 import TypeOfTestMessage from './TypeOfTestMessage'
 import useCountDownAudio from './useCountDownAudio'
+import ManualRepeat from './ManualRepeat'
 
 const SPARE_TIME = 15
 const CHANCES = 3
@@ -19,7 +20,7 @@ export default function AudioTest({ onTestComplete }) {
   const [message, setMessage] = useState(htest) // Nuevo estado para el mensaje de audio [headphones
   const [next, setNext] = useState(null)
   const [counter, setCounter] = useState(0)
-
+  const [isManualRepeat, setIsManualRepeat] = useState(false) // Nuevo estado para el indicador de carga
   useEffect(() => {
     const currentScriptPath = new URL(import.meta.url).pathname
     const file = `.${currentScriptPath}/../../preload/The Weeknd - Save Your Tears (Official Music Video).mp4`
@@ -30,15 +31,20 @@ export default function AudioTest({ onTestComplete }) {
   }, [])
 
   useEffect(() => {
-    if (counter === 2) onTestComplete(true)
+    if (counter === 2) {
+      stop()
+      setIsManualRepeat(true)
+    }
   }, [counter])
 
   useEffect(() => {
-    if (chances === 0) onTestComplete(false)
+    if (chances === 0) {
+      onTestComplete(false)
+    }
   }, [chances])
 
   const { secondsLeft, start, stop } = useCountDownAudio(() => {
-    StartSpeakersTest()
+    StartSpeakersTest() // Esta funcion se ejecuta cuando el timer llega a 0
   })
 
   const handleDeviceChange = () => {
@@ -46,18 +52,18 @@ export default function AudioTest({ onTestComplete }) {
   }
 
   function resetTest() {
-    navigator.mediaDevices.removeEventListener('devicechange', handleDeviceChange)
     stop()
     setDevice('headphones')
-    setGuideLines(true) // Se necesita aplicar un re render para que el video use correctamente los speakers
+    setGuideLines(true)
     setIsModalOpen(false)
     setChances(chances - 1)
+    navigator.mediaDevices.removeEventListener('devicechange', handleDeviceChange)
   }
 
   function StartSpeakersTest() {
     setDevice('speaker')
-    setIsModalOpen(true)
-    setIsModalOpen(false)
+    setIsModalOpen(true) // Se necesita aplicar un re render para que el video use correctamente los speakers
+    setIsModalOpen(false) // Se necesita aplicar un re render para que el video use correctamente los speakers
     const video = document.querySelector('video')
     video.setSinkId(next)
     start(SPARE_TIME)
@@ -73,6 +79,7 @@ export default function AudioTest({ onTestComplete }) {
     } else {
       setGuideLines(false)
       setIsModalOpen(true)
+      setChances(chances - 1) // si no se inicio la prueba, con audifonos, se resta una oportunidad
       navigator.mediaDevices.addEventListener('devicechange', handleDeviceChange)
     }
     setIsLoading(false) // Detener el indicador de carga
@@ -100,7 +107,7 @@ export default function AudioTest({ onTestComplete }) {
     <>
       {isLoading ? (
         <div className="font-semibold text-xl min-h-screen grid place-items-center">
-          Cargando...
+          Cargando...no desconecte los audífonos
         </div> // Pantalla de carga
       ) : guideLines ? (
         <TypeOfTestMessage
@@ -109,8 +116,15 @@ export default function AudioTest({ onTestComplete }) {
           tryAgain={chances}
           onEnterPressed={handleContinuarClick}
         />
+      ) : isManualRepeat ? (
+        <ManualRepeat
+          title="Test de Audio"
+          mensaje="El test de audio terminó, ¿Se escuchó el audio correctamente?"
+          onNext={() => onTestComplete(false)}
+          onPass={() => onTestComplete(true)}
+        /> // Pantalla de repetición manual
       ) : isModalOpen ? (
-        <ModalHeadPhones />
+        <ModalHeadPhones onNext={() => onTestComplete(false)} />
       ) : (
         <div className="h-screen grid max-w-[70rem] place-items-center mx-auto gap-5">
           {videoPath && (

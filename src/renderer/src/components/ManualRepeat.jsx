@@ -16,19 +16,21 @@ export default function RepeatTest({ title, mensaje, onRepeat, onNext, onPass })
           <h1 className="font-semibold text-xl">{title}</h1>
           <div className="text-center text-[#90949b]">
             <p>{mensaje}</p>
-            <p>¿Desea repetir el test de nuevo?</p>
+            {onRepeat && <p className="text-[#90949b] cursor-pointer"> ¿Desea repetir el test?</p>}
           </div>
           <div
             className="flex gap-3 mt-5
           "
           >
-            <button
-              className="bg-[#4f46e5] py-1 px-10 font-semibold
+            {onRepeat && (
+              <button
+                className="bg-[#4f46e5] py-1 px-10 font-semibold
              text-white rounded-sm hover:bg-blue-500"
-              onClick={onRepeat}
-            >
-              Repetir Test
-            </button>
+                onClick={onRepeat}
+              >
+                Repetir el test
+              </button>
+            )}
             <button
               className="font-semibold border rounded-sm hover:bg-slate-100 border-[#90949b] py-1 px-10"
               onClick={onNext}
