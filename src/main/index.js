@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { app, shell, BrowserWindow, globalShortcut, protocol, net, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, globalShortcut, protocol, net } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -25,6 +25,7 @@ function createWindow() {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
+      // devTools: false
     }
   })
 
@@ -33,6 +34,7 @@ function createWindow() {
     mainWindow.focus()
   })
 
+  mainWindow.setMenu(null) // This line removes the menu bar.
   // Configura la ventana para iniciar en modo de pantalla completa
   // mainWindow.setFullScreen(true)
 
@@ -60,6 +62,7 @@ app.whenReady().then(() => {
   protocol.handle('animation', function (request) {
     return net.fetch('file://' + request.url.slice('animation://'.length))
   })
+
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
@@ -68,10 +71,6 @@ app.whenReady().then(() => {
   })
 
   createWindow()
-
-  globalShortcut.register('CommandOrControl+Shift+I', () => {
-    BrowserWindow.getFocusedWindow()?.webContents.toggleDevTools()
-  })
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

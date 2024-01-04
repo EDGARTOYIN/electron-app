@@ -7,14 +7,15 @@ import OutputLogTest from './components/OutputLogTest'
 import TouchPad from './components/TouchPad'
 import AudioTest from './components/AudioTest'
 import KeyBoardTest from './components/keyBoardLayouts/KeyBoardTest'
-
+import WebCamTest from './components/WebCamTest'
 // Tests Actuales
 const tests = [
   // { testName: 'Touch Screen', TestComponent: TouchTest },
   // { testName: 'Pixel Dead', TestComponent: DeadPixelTest },
   // { testName: 'Touch Pad', TestComponent: TouchPad },
   // { testName: 'Audio Test', TestComponent: AudioTest },
-  { testName: 'KeyBoard Test', TestComponent: KeyBoardTest }
+  // { testName: 'KeyBoard Test', TestComponent: KeyBoardTest },
+  { testName: 'WebCam Test', TestComponent: WebCamTest }
 ]
 
 export default function App() {
