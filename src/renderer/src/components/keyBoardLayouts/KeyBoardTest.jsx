@@ -19,9 +19,11 @@ export default function KeyBoardTest({ onTestComplete }) {
     setKeysPressed((prev) => prev + 1)
   }
 
-  if (keysPresed === KEYS_AMOUNT) {
-    onTestComplete(true)
-  }
+  useEffect(() => {
+    if (keysPresed === KEYS_AMOUNT) {
+      onTestComplete(true)
+    }
+  }, [keysPresed])
 
   function handleStart() {
     setIsModal(false)

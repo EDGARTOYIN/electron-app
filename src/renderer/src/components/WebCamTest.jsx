@@ -1,12 +1,13 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Button from './Button'
 import TypeOfTestMessage from './TypeOfTestMessage'
 
 export default function WebCamTest({ onTestComplete }) {
   const [isGuideLinesOpen, setIsGuideLinesOpen] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
+  const [stream, setStream] = useState(null)
 
   const videoRef = useRef(null)
 
@@ -15,6 +16,7 @@ export default function WebCamTest({ onTestComplete }) {
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then(function (stream) {
+        setStream(stream)
         if (videoRef.current) {
           videoRef.current.srcObject = stream
           videoRef.current.play()
@@ -39,6 +41,14 @@ export default function WebCamTest({ onTestComplete }) {
     setIsGuideLinesOpen(false)
     startCamera()
   }
+
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop())
+      }
+    }
+  }, [stream])
 
   return (
     <>
