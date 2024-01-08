@@ -5,8 +5,9 @@ export default function OutputLogTest({ testResults }) {
     <div>
       {testResults.map((test, index) => {
         return (
-          <h1 key={index}>
-            {test.testName} de prueba resultado:{String(test.result)}
+          <h1 key={index} className="m-4 text-xl">
+            <span className="font-semibold">{test.testName}</span>:
+            <span className="pl-2">{String(test.result)}</span>
           </h1>
         )
       })}
